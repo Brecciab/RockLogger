@@ -8,10 +8,11 @@ namespace RockLogger
     {
         public enum EventLevel
         {
-            Debug  = 0,
-            Information = 1,
-            Error = 2,  // Error that is caught without exception
-            CriticalError = 3 // Error with Exception
+            Off = 0,
+            Debug  = 1,
+            Information = 2,
+            Error = 3,  // Error that is caught without exception
+            CriticalError = 4 // Error with Exception
         }
 
         /// <summary>
@@ -50,9 +51,9 @@ namespace RockLogger
         /// <summary>
         /// Log a debug event with parameters from the object array added
         /// </summary>
-        /// <param name="eventLog"></param>
-        /// <param name="methodBase"></param>
-        /// <param name="Message"></param>
+        /// <param name="eventLog">The object used to save the data</param>
+        /// <param name="methodBase">The calling methods information for reflection</param>
+        /// <param name="Message">A manually set message</param>
         /// <param name="ob">Array of objects to set the parameters for on the event log object</param>
         public static void WriteDebugEvent(IEventLog eventLog, MethodBase methodBase, string Message, params object[] ob)
         {

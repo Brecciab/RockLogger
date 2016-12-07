@@ -22,5 +22,6 @@ namespace DataAccess
         public string CompanyName { get; set; }
         public Nullable<int> CompanyId { get; set; }
         public string DataBlock { get; set; }
+        public Nullable<System.DateTime> EventDate { get; set; }
     }
 }
