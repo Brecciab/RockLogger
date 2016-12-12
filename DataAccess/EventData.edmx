@@ -18,6 +18,7 @@
           <Property Name="CompanyName" Type="varchar" MaxLength="100" />
           <Property Name="CompanyId" Type="int" />
           <Property Name="DataBlock" Type="nvarchar(max)" />
+          <Property Name="ErrorId" Type="int" />
         </EntityType>
         <EntityContainer Name="EventSampleModelStoreContainer">
           <EntitySet Name="EventActivity" EntityType="Self.EventActivity" Schema="dbo" store:Type="Tables" />
@@ -39,6 +40,7 @@
           <Property Name="CompanyId" Type="Int32" />
           <Property Name="DataBlock" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EventDate" Type="DateTime" Precision="3" />
+          <Property Name="ErrorId" Type="Int32" />
         </EntityType>
         <EntityContainer Name="EventSampleEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="EventActivities" EntityType="Self.EventActivity" />
@@ -52,6 +54,7 @@
           <EntitySetMapping Name="EventActivities">
             <EntityTypeMapping TypeName="EventSampleModel.EventActivity">
               <MappingFragment StoreEntitySet="EventActivity">
+                <ScalarProperty Name="ErrorId" ColumnName="ErrorId" />
                 <ScalarProperty Name="EventDate" ColumnName="EventDate" />
                 <ScalarProperty Name="DataBlock" ColumnName="DataBlock" />
                 <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />

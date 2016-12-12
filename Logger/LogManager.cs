@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using Logger;
+using RockLogger;
+using System.Configuration;
+using System.Xml.Serialization;
 
 namespace RockLogger
 {
@@ -12,20 +14,27 @@ namespace RockLogger
             Debug  = 1,
             Information = 2,
             Error = 3,  // Error that is caught without exception
-            CriticalError = 4 // Error with Exception
+            CriticalError = 4, // Error with Exception
+            All = 5 // All messages will be logged
         }
 
+        private RockLogger.Settings settings = Settings.Instance;
+
         /// <summary>
-        /// 
+        /// Checks if the level of the message is set to be logged
         /// </summary>
         /// <returns>True means proceed with logging</returns>
-        public static bool CheckLoggingLevel()
+        public static bool CheckLoggingLevel(LogManager.EventLevel level  )
         {
-            //TODO: configure the log to which level to log.  
-            //TODO: I want to do this dynamically so that I can determine on the fly if it should be enabled
-            //TODO: Also want to include or exclude based on namespace
-
-            return true;
+            if (Settings.Instance.CurrentLoggingLevel >= level  || Settings.Instance.CurrentLoggingLevel == EventLevel.All)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //Future: Also want to include or exclude based on namespace
         }
         
         /// <summary>
@@ -36,16 +45,18 @@ namespace RockLogger
         /// <param name="Message">A manually set message</param>
         public static void WriteDebugEvent(IEventLog eventLog, MethodBase methodBase, string Message)
         {
-            // get the method name
-            eventLog.MethodName = methodBase.Name.ToString();
-            // Get the name of the class that is calling
-            eventLog.ClassName = methodBase.Module.ToString();
+            if (CheckLoggingLevel(EventLevel.Debug))
+            {
+                // get the method name
+                eventLog.MethodName = methodBase.Name.ToString();
+                // Get the name of the class that is calling
+                eventLog.ClassName = methodBase.Module.ToString();
 
-            eventLog.EventLevel = LogManager.EventLevel.Debug;
+                eventLog.EventLevel = LogManager.EventLevel.Debug;
 
-            //Only the main information will be logged here since this is typically called by a static method                     
-            eventLog.Save();
-                
+                //Only the main information will be logged here since this is typically called by a static method                     
+                eventLog.Save();
+            }  
         }
 
         /// <summary>
@@ -57,17 +68,19 @@ namespace RockLogger
         /// <param name="ob">Array of objects to set the parameters for on the event log object</param>
         public static void WriteDebugEvent(IEventLog eventLog, MethodBase methodBase, string Message, params object[] ob)
         {
-            // get the method name
-            eventLog.MethodName = methodBase.Name.ToString();
-            // Get the name of the class that is calling
-            eventLog.ClassName = methodBase.Module.ToString();
+            if (CheckLoggingLevel(EventLevel.Debug))
+            {
+                // get the method name
+                eventLog.MethodName = methodBase.Name.ToString();
+                // Get the name of the class that is calling
+                eventLog.ClassName = methodBase.Module.ToString();
 
-            eventLog.EventLevel = LogManager.EventLevel.Debug;
+                eventLog.EventLevel = LogManager.EventLevel.Debug;
 
-            SetAttributeValues(eventLog, ob);
-                        
-            eventLog.Save();
+                SetAttributeValues(eventLog, ob);
 
+                eventLog.Save();
+            }
         }
 
         /// <summary>
@@ -79,21 +92,23 @@ namespace RockLogger
         /// <param name="ob">Array of objects to set the parameters for on the event log object</param>
         public static void WriteCriticalErrorEvent(IEventLog eventLog, MethodBase methodBase, Exception exp, params object[] ob)
         {
-            // get the method name
-            eventLog.MethodName = methodBase.Name.ToString();
-            // Get the name of the class that is calling
-            eventLog.ClassName = methodBase.Module.ToString();
+            if (CheckLoggingLevel(EventLevel.CriticalError))
+            {
+                // get the method name
+                eventLog.MethodName = methodBase.Name.ToString();
+                // Get the name of the class that is calling
+                eventLog.ClassName = methodBase.Module.ToString();
 
-            eventLog.EventLevel = LogManager.EventLevel.CriticalError;
+                eventLog.EventLevel = LogManager.EventLevel.CriticalError;
 
-            eventLog.ExceptionData = exp.Data.ToString();
+                eventLog.ExceptionData = exp.Data.ToString();
 
-            eventLog.Message = exp.Message;
+                eventLog.Message = exp.Message;
 
-            SetAttributeValues(eventLog, ob);
+                SetAttributeValues(eventLog, ob);
 
-            eventLog.Save();
-
+                eventLog.Save();
+            }
         }
 
         /// <summary>
@@ -106,16 +121,18 @@ namespace RockLogger
         /// <param name="ob">Array of objects to set the parameters for on the event log object</param>
         public static void WriteLogEvent(LogManager.EventLevel level, IEventLog eventLog, MethodBase methodBase, string Message, params object[] ob)
         {
-            // get the method name
-            eventLog.MethodName = methodBase.Name.ToString();
-            // Get the name of the class that is calling
-            eventLog.ClassName = methodBase.Module.ToString();
+            if (CheckLoggingLevel(level))
+            {
+                // get the method name
+                eventLog.MethodName = methodBase.Name.ToString();
+                // Get the name of the class that is calling
+                eventLog.ClassName = methodBase.Module.ToString();
 
-            SetAttributeValues(eventLog, ob);
+                SetAttributeValues(eventLog, ob);
 
-            //Set the values on the call object   
-            eventLog.Save();
-
+                //Set the values on the call object   
+                eventLog.Save();
+            }
         }
 
         /// <summary>
@@ -128,7 +145,7 @@ namespace RockLogger
         {
             foreach (object o in ob)
             {
-                // Can't use auto mapper because of the serialized properties
+                // Can't use auto mapper because of the serialized properties and labeling
                 PropertyInfo[] props = o.GetType().GetProperties();
 
                 foreach (var prop in props)
@@ -160,7 +177,19 @@ namespace RockLogger
                                 {
                                     //TODO: Serialize the property.  This is assumed because it is a complex type such as a class
                                     eventLog.GetType().GetProperty(prop.Name).SetValue(eventLog, prop.GetValue(o, null), null);
+
+                                    System.IO.StringWriter writer = new System.IO.StringWriter();
+                                    
+                                    //XmlSerializer serializer = new XmlSerializer(typeof(prop.GetType()));
+                                    //serializer.Serialize(writer, prop.GetValue());
+                                    
+
                                 }
+                                /// Notes:
+                                /// XML serialization only serializes public fields and properties. 
+                                /// XML serialization does not include any type information. 
+                                /// We need to have a default/ non - parameterised constructor in order to serialize an object.
+                                /// ReadOnly properties are not serialized.   
                             }
                             else if (attribute.GetType() == typeof(SerializeJSONLogAttribute))
                             {

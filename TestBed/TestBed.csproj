@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="LogWriterEL.cs" />
     <Compile Include="LogWriterTxt.cs" />
+    <Compile Include="OtherTestClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClass.cs" />

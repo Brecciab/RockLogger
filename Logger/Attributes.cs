@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Logger
+namespace RockLogger
 {
     /// <summary>
     /// Used to create a way to add custom attributes to a field.
