@@ -22,7 +22,7 @@ namespace RockLogger
             var section = ConfigurationManager.GetSection("RockLogger") as System.Collections.Specialized.NameValueCollection;
             CurrentLoggingLevel = (LogManager.EventLevel)Convert.ToInt32(section["CurrentLoggingLevel"]);
             LogFileLocation = section["LogFileLocation"];
-            EventLogName = section["LogFileLocation"];
+            EventLogName = section["EventLogName"];
         }
 
         public string LogFileLocation { get; set; }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RockLogger.LogManager;
 using System.Reflection;
+using System.Resources;
 
 namespace TestBed
 {
@@ -94,6 +95,12 @@ namespace TestBed
 
             DisplayError frmErr = new DisplayError(it);
             frmErr.ShowDialog(); // showing dialog so that it has to be dealt with
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+            
         }
     }
 }

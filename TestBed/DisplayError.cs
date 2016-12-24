@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TestBed
@@ -25,6 +19,27 @@ namespace TestBed
             // Check to make sure that the form has an ErrorItem to display
             if (ErrItem != null)
             {
+                switch (ErrItem.Action)
+                {
+                    // Other, used as default numbering
+                    case 0:
+                        btnSubmitTicket.Visible = false;
+                        break;
+                    case ErrorItem.ErrorActionId.OkOnly:
+                        btnSubmitTicket.Visible = false;
+                        break;
+                    case ErrorItem.ErrorActionId.OkSubmit:
+                        //OKSubmit, allows for the submit button to be pressed and a report generated
+                        btnSubmitTicket.Visible = true;
+                        break;
+                    case ErrorItem.ErrorActionId.OkCancel:
+                        // OkCancel, currently not implemented
+                        btnSubmitTicket.Visible = false;
+                        break;
+                    default:
+                        btnSubmitTicket.Visible = false;
+                        break;
+                }
                 lblErrorNumber.Text = ErrItem?.Number.ToString() ?? "Unable to find a number associated with this error";
                 lblErrorMessage.Text = ErrItem?.DisplayMessage ?? "Unable to find a message associated with this error.";
                 // set the title of the form
