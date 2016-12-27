@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RockLogger.LogManager;
 using System.Reflection;
+using System.Resources;
 
 namespace TestBed
 {
-    public partial class frmMain : Form
+    public partial class Main : Form
     {
-        public frmMain()
+        public Main()
         {
             InitializeComponent();
         }
@@ -81,6 +82,25 @@ namespace TestBed
 
 
             txtResults.Text += string.Format($"{ Environment.NewLine}The row count is now: {events.ToString()}");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ErrorItem it = new TestBed.ErrorItem();
+
+            it.Title = "Test Error Display";
+            it.DisplayMessage = "We would have a friendly message here for display.";
+            it.HelpLink = "https://msdn.microsoft.com/en-us/library/aa288420(v=vs.71).aspx";
+            it.Number = 503;
+
+            DisplayError frmErr = new DisplayError(it);
+            frmErr.ShowDialog(); // showing dialog so that it has to be dealt with
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+            
         }
     }
 }

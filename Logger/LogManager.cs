@@ -188,7 +188,7 @@ namespace RockLogger
                                 /// Notes:
                                 /// XML serialization only serializes public fields and properties. 
                                 /// XML serialization does not include any type information. 
-                                /// We need to have a default/ non - parameterised constructor in order to serialize an object.
+                                /// We need to have a default/ non - parameterized constructor in order to serialize an object.
                                 /// ReadOnly properties are not serialized.   
                             }
                             else if (attribute.GetType() == typeof(SerializeJSONLogAttribute))
