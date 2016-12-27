@@ -30,10 +30,10 @@ namespace TestBed
 
         public string ExceptionData { get; set; }
 
-        [Logger.ValueLog]
+        [ValueLog]
         public string CompanyName { get; set; }
 
-        [Logger.ValueLog]
+        [ValueLog]
         public int CompanyId { get; set; }
 
         // Save the results to the data source

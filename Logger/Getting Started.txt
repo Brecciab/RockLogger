@@ -1,0 +1,9 @@
+﻿
+
+Add a refernce in your class:
+	using static RockLogger.LogManager;
+
+Add one of the following to your custom class's parameters.  Note: Fields will not be logged!
+
+	[Logger.ValueLog] - logs the value of the parameter if the names match
+

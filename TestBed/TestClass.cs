@@ -9,24 +9,24 @@ namespace TestBed
 {
     public class TestClass
     {
-        [Logger.ValueLog]
+        [RockLogger.ValueLog]
         public int CompanyId { get; set; }
 
-        [Logger.ValueLog]
+        [RockLogger.ValueLog]
         public string CompanyName { get; set; }
 
-        [Logger.ValueLog]
+        [RockLogger.ValueLog]
         //Example, you may want to set to the calling IP address if a WCF or some other identifying information
         public string ExeLocation { get; set; } = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-        [Logger.SerializeJSONLog]
+        [RockLogger.SerializeJSONLog]
         public Dictionary<string, string> DataBlock { get; set; }
 
-        [Logger.SerializeXMLLog]
+        [RockLogger.SerializeXMLLog]
         public Dictionary<string, string> XMLDataBlock { get; set; }
 
 
-        public string CheckCompanyFacts()
+        public string SetCompanyFacts()
         {
             string results = string.Empty;
 

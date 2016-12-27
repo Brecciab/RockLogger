@@ -28,7 +28,7 @@ namespace TestBed
 
             TestClass tc = new TestClass();
 
-            tc.CheckCompanyFacts();
+            tc.SetCompanyFacts();
 
             tc.CompanyName = "Test case";
             tc.CompanyId = 14;
@@ -39,6 +39,14 @@ namespace TestBed
             txtResults.Text += $"{ Environment.NewLine}";
             txtResults.Text += $"The values in rLog are now: { Newtonsoft.Json.JsonConvert.SerializeObject(rLog)}";
 
+            DataAccess.EventSampleEntities context = new DataAccess.EventSampleEntities();
+
+            var events = 
+            (from o in context.EventActivities
+             select o).Count();
+
+            txtResults.Text += string.Format( $"{ Environment.NewLine}The row count is now: {events.ToString()}");
+
             try
             {
                 // Now generate an error on purpose
@@ -48,6 +56,31 @@ namespace TestBed
                 WriteLogEvent(EventLevel.CriticalError, rLog, MethodBase.GetCurrentMethod(),"Critical Error");
             }
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            LogWriterEF rLog = new LogWriterEF();
+
+            OtherTestClass otc = new OtherTestClass();
+            
+            otc.ErrorId = 14;
+
+            RockLogger.Settings settings = RockLogger.Settings.Instance;
+
+            settings.CurrentLoggingLevel = RockLogger.LogManager.EventLevel.Debug;
+
+            WriteDebugEvent(rLog, MethodBase.GetCurrentMethod(), "This is a test after changing the default logging level", otc, this);
+            txtResults.Text += $"{ Environment.NewLine}Check the record count.";
+
+            DataAccess.EventSampleEntities context = new DataAccess.EventSampleEntities();
+
+            var events =
+            (from o in context.EventActivities
+             select o).Count();
+
+
+            txtResults.Text += string.Format($"{ Environment.NewLine}The row count is now: {events.ToString()}");
         }
     }
 }

@@ -25,11 +25,13 @@ namespace TestBed
 
         public string ExceptionData { get; set; }
 
-        [Logger.ValueLog]
+        [ValueLog]
         public string CompanyName { get; set; }
 
-        [Logger.ValueLog]
+        [ValueLog]
         public int CompanyId { get; set; }
+
+        public int ErrorId { get; set;}
 
         // Save the results to the data source
         public void Save()
@@ -39,18 +41,20 @@ namespace TestBed
             using (var context = new EventSampleEntities())
             {
                 // Use Automapper to map the fields 
-                //TODO: Change to static maps?                
+                //Future: Change to static maps?                
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<LogWriterEF, EventActivity>());
                 EventActivity ev = config.CreateMapper().Map<EventActivity>(this);
+                ev.EventDate = System.DateTime.UtcNow;
                 context.EventActivities.Add(ev);
                 context.SaveChanges();
                 
                 Reset();
             }   
         }
-
+        
         public void Reset()
         {
+            //Future: Automate this!
             // Reset all the base parameters
             Id = 0;
             EventLevel = LogManager.EventLevel.Information;
